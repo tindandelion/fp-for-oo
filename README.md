@@ -3,6 +3,9 @@ Functional Programming for the Object-Oriented Programmer
 
 #TODO
 
+* Unit testing framework
+* Leiningen - what is it, how it will help me? 
+
 * **DONE** Install Clojure 
 
 Using `homebrew` for that: 
@@ -11,6 +14,7 @@ Using `homebrew` for that:
     
 To run REPL, use `clj`. To run a file, use `clj <filename>`
 
-* Try REPL from command line
-* Leiningen - what is it, how it will help me? 
-* Text editor - IntelliJ IDEA, Emacs?
+* **DONE** Try REPL from command line
+* **DONE** Text editor - IntelliJ IDEA, Emacs?
+
+Using Emacs with basic `clojure-mode` for now. 

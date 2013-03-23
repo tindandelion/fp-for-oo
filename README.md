@@ -3,8 +3,11 @@ Functional Programming for the Object-Oriented Programmer
 
 # TODO
 
-* Unit testing framework
 * Leiningen - what is it, how it will help me? 
+
+* **DONE** Unit testing framework
+
+Using provided `clojure.test` framework
 
 * **DONE** Install Clojure 
 

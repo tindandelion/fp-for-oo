@@ -3,7 +3,10 @@ Functional Programming for the Object-Oriented Programmer
 
 # TODO
 
-* Chapter 1 
+* Chapter 1
+  * Review Brian's solutions
+
+* Rainbow mode for Emacs
 * Leiningen - what is it, how it will help me? 
 
 # DONE

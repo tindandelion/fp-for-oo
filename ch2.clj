@@ -2,17 +2,27 @@
 (ns org.dandelion.fp-for-oo
   (:use clojure.test))
 
-(def class-of :__class_symbol__)
+(def class-name :__class_symbol__)
+(defn class-of [this]
+  (eval (class-name this)))
 
 (defn send-to [object message & args]
-  (let [klass (eval (class-of object))
+  (let [klass (class-of object)
         instance-method (message (:__instance_methods__ klass))]
     (apply instance-method object args)))
 
 (defn make [klass & args]
-  (let [allocated {}
-        seeded (assoc allocated :__class_symbol__ (:__own_symbol__ klass))]
-    (apply send-to seeded :add-instance-values args)))
+  (let [allocated {:__class_symbol__ (:__own_symbol__ klass)}]
+    (apply send-to allocated :add-instance-values args)))
+
+(def Anything
+  {
+   :__own_symbol__ 'Anything
+   :__instance_methods__
+   {
+    :add-instance-values identity
+    }
+   })
 
 (def Point
   {
@@ -68,13 +78,17 @@
 
 ;; ---- Tests
 
+(deftest AnythingTest
+  (testing "creation"
+    (let [any (make Anything)]
+      (is (= Anything (class-of any))))))
 
 (deftest PointTest
   (def p (make Point 3 4))
   (testing "creation"
     (is (= 3 (send-to p :x)))
     (is (= 4 (send-to p :y)))
-    (is (= 'Point (class-of p))))
+    (is (= 'Point (class-name p))))
   
   (testing "shifting"
     (def shifted-p (send-to p :shift 2 3))
@@ -92,7 +106,7 @@
                (make Point 1 0)
                (make Point 0 1)))
   (testing "creation"
-    (is (= 'Triangle (class-of t))))
+    (is (= 'Triangle (class-name t))))
   (testing "equality"
     (is (equal-triangles? right-triangle right-triangle))
     (is (not (equal-triangles? right-triangle different-triangle)))

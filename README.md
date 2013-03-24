@@ -3,13 +3,15 @@ Functional Programming for the Object-Oriented Programmer
 
 # TODO
 
-* Chapter 1
-  * Review Brian's solutions
-
-* Rainbow mode for Emacs
+* Chapter 2
+* Running tests automatically and continuously
 * Leiningen - what is it, how it will help me? 
 
 # DONE
+
+* Rainbow mode for Emacs
+* Chapter 1
+  DONE Review Brian's solutions
 
 * Unit testing framework
 

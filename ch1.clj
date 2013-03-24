@@ -37,7 +37,9 @@
 ;; Exercise 7
 
 (defn tails [sequence]
-  (map drop (range) (repeat (inc (count sequence)) sequence)))
+  (map drop
+       (range)
+       (repeat (inc (count sequence)) sequence)))
 
 (deftest tails-test
   (is (= '(()) (tails [])))
@@ -45,6 +47,4 @@
   (is (= '((1 2) (2) ()) (tails [1 2])))
   (is (= '((1 2 3 4 5) (2 3 4 5) (3 4 5) (4 5) (5) ()) (tails [1 2 3 4 5]))))
 
-
 (run-tests)
-

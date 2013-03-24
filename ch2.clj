@@ -10,7 +10,6 @@
 (defn send-to [object message & args]
   (apply (message (:__methods__ object)) object args))
 
-
 (defn Point [x y]
   {:x x,
    :y y
@@ -19,15 +18,16 @@
    {
     :x (fn [this] (:x this))
     :y (fn [this] (:y this))
+    :shift (fn [this incx incy]
+             (Point (+ (send-to this :x) incx)
+                    (+ (send-to this :y) incy)))
+    :add (fn [this that]
+           (send-to this :shift
+                    (send-to that :x)
+                    (send-to that :y)))
+    
     }})
-
-(defn shift [this incx incy]
-  (Point (+ (send-to this :x) incx)
-         (+ (send-to this :y) incy)))
-
-(defn add [p1 p2]
-  (shift p1 (send-to p2 :x) (send-to p2 :y)))
-
+           
 (defn Triangle [p1 p2 p3]
   {:point1 p1,
    :point2 p2,
@@ -64,11 +64,11 @@
     (is (= 'Point (class-of p))))
   
   (testing "shifting"
-    (def shifted-p (shift p 2 3))
+    (def shifted-p (send-to p :shift 2 3))
     (is (= 5 (send-to shifted-p :x)))
     (is (= 7 (send-to shifted-p :y))))
   (testing "addition"
-    (def added-p (add p (Point 5 6)))
+    (def added-p (send-to p :add (make Point 5 6)))
     (is (= 8 (send-to added-p :x)))
     (is (= 10 (send-to added-p :y)))))
 

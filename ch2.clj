@@ -2,16 +2,17 @@
 (ns org.dandelion.fp-for-oo
   (:use clojure.test))
 
+(def class-of :__class_symbol__)
+
 (defn send-to [object message & args]
-  (apply (message (:__instance_methods__ object)) object args))
+  (let [klass (eval (class-of object))
+        instance-method (message (:__instance_methods__ klass))]
+    (apply instance-method object args)))
 
 (defn make [klass & args]
   (let [allocated {}
-        seeded (assoc allocated :__class_symbol__ (:__own_symbol__ klass))
-        initialized (merge seeded klass)]
-    (apply send-to initialized :add-instance-values args)))
-
-(def class-of :__class_symbol__)
+        seeded (assoc allocated :__class_symbol__ (:__own_symbol__ klass))]
+    (apply send-to seeded :add-instance-values args)))
 
 (def Point
   {

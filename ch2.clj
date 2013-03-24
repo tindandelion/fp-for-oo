@@ -7,14 +7,15 @@
 
 (defn make [klass & args]
   (let [allocated {}
-        initialized (merge allocated klass)]
+        seeded (assoc allocated :__class_symbol__ (:__own_symbol__ klass))
+        initialized (merge seeded klass)]
     (apply send-to initialized :add-instance-values args)))
 
 (def class-of :__class_symbol__)
 
 (def Point
   {
-   :__class_symbol__ 'Point
+   :__own_symbol__ 'Point
    :__instance_methods__
    {
     :x (fn [this] (:x this))
@@ -34,7 +35,7 @@
 
 (def Triangle
   {
-   :__class_symbol__ 'Triangle
+   :__own_symbol__ 'Triangle
    :__instance_methods__
    {
     :add-instance-values (fn [this pt1 pt2 pt3]

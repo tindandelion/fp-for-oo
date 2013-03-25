@@ -3,13 +3,33 @@
   (:use clojure.test))
 
 (def class-name :__class_symbol__)
+
 (defn class-of [this]
   (eval (class-name this)))
 
+(defn superclass-of [klass]
+  (eval (:__superclass_symbol__ klass)))
+
+(defn class-instance-methods [klass]
+  (:__instance_methods__ klass))
+
+(defn inheritance-chain [klass]
+  (if (nil? klass)
+    nil
+    (cons klass (inheritance-chain (superclass-of klass)))))
+
+(defn method-cache [klass]
+  (let [method-maps
+        (map class-instance-methods
+             (reverse (inheritance-chain klass)))]
+    (apply merge method-maps)))
+
 (defn send-to [object message & args]
   (let [klass (class-of object)
-        instance-method (message (:__instance_methods__ klass))]
+        instance-method (message (method-cache klass))]
     (apply instance-method object args)))
+
+
 
 (defn make [klass & args]
   (let [allocated {:__class_symbol__ (:__own_symbol__ klass)}]
@@ -49,11 +69,16 @@
   {
    :__own_symbol__ 'RedPoint
    :__superclass_symbol__ 'Point
+   :__instance_methods__
+   {
+    :color (fn [this] 'red)
+    }
    })
 
 (def Triangle
   {
    :__own_symbol__ 'Triangle
+   :__superclass_symbol__ 'Anything
    :__instance_methods__
    {
     :add-instance-values (fn [this pt1 pt2 pt3]
@@ -85,14 +110,6 @@
 
 ;; ---- Tests
 
-(defn superclass-of [klass]
-  (eval (:__superclass_symbol__ klass)))
-
-(defn inheritance-chain [klass]
-  (let [super (superclass-of klass)]
-    (if (nil? super)
-      (list Anything)
-      (cons klass (inheritance-chain super)))))
 
 (deftest superclass-test
   (is (= Point (superclass-of RedPoint)))
@@ -101,8 +118,14 @@
 
 (deftest inheritance-chain-test
   (is (= (list Anything) (inheritance-chain Anything)))
-  (is (= (list Anything Point) (inheritance-chain Point)))
-  (is (= (list Anything Point RedPoint) (inheritance-chain RedPoint))))
+  (is (= (list Point Anything) (inheritance-chain Point)))
+  (is (= (list RedPoint Point Anything) (inheritance-chain RedPoint))))
+
+(deftest RedPointTest
+  (testing "creation"
+    (let [rp (make RedPoint 1 1)]
+      (is (= 1 (send-to rp :x)))
+      (is (= 'red (send-to rp :color))))))
 
 (deftest AnythingTest
   (testing "creation"

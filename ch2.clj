@@ -27,6 +27,7 @@
 (def Point
   {
    :__own_symbol__ 'Point
+   :__superclass_symbol__ 'Anything
    :__instance_methods__
    {
     :x (fn [this] (:x this))
@@ -42,6 +43,12 @@
                     (send-to that :x)
                     (send-to that :y)))
     }
+   })
+
+(def RedPoint
+  {
+   :__own_symbol__ 'RedPoint
+   :__superclass_symbol__ 'Point
    })
 
 (def Triangle
@@ -77,6 +84,14 @@
 
 
 ;; ---- Tests
+
+(defn superclass-of [klass]
+  (eval (:__superclass_symbol__ klass)))
+
+(deftest superclass-test
+  (is (= Point (superclass-of RedPoint)))
+  (is (= Anything (superclass-of Point)))
+  (is (= nil (superclass-of Anything))))
 
 (deftest AnythingTest
   (testing "creation"

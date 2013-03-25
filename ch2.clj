@@ -88,10 +88,21 @@
 (defn superclass-of [klass]
   (eval (:__superclass_symbol__ klass)))
 
+(defn inheritance-chain [klass]
+  (let [super (superclass-of klass)]
+    (if (nil? super)
+      (list Anything)
+      (cons klass (inheritance-chain super)))))
+
 (deftest superclass-test
   (is (= Point (superclass-of RedPoint)))
   (is (= Anything (superclass-of Point)))
   (is (= nil (superclass-of Anything))))
+
+(deftest inheritance-chain-test
+  (is (= (list Anything) (inheritance-chain Anything)))
+  (is (= (list Anything Point) (inheritance-chain Point)))
+  (is (= (list Anything Point RedPoint) (inheritance-chain RedPoint))))
 
 (deftest AnythingTest
   (testing "creation"
